@@ -8,6 +8,9 @@ export function proxy(request: NextRequest) {
   const hasSession = request.cookies.has("ams_session");
   const isAuthPage = pathname === "/login" || pathname === "/setup";
   if (!hasSession && !isAuthPage) {
+    if (pathname.startsWith("/api/")) {
+      return NextResponse.json({ error: "Not signed in." }, { status: 401 });
+    }
     return NextResponse.redirect(new URL("/login", request.url));
   }
   return NextResponse.next();

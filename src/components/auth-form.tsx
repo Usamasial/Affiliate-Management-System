@@ -28,6 +28,7 @@ export function AuthForm({
             type={f.type ?? "text"}
             placeholder={f.placeholder}
             autoComplete={f.autoComplete}
+            defaultValue={f.type === "password" ? undefined : state?.values?.[f.name]}
             required
             className="h-10"
           />

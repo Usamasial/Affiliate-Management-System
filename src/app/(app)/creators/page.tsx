@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowDown, ArrowUp, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { periodQuery, resolvePeriod } from "@/lib/period";
 import { analyse } from "@/lib/analytics/recommendations";
 import { FLAGS, SEGMENTS, SEGMENT_ORDER, type SegmentKey } from "@/lib/segments";
 import { href, one, periodParams, type SP } from "@/lib/url";
-import { Badge, Button, Card, EmptyState, Input, PageHeader, Select, Td, Th } from "@/components/ui/primitives";
+import { Badge, Button, Card, EmptyState, Input, PageHeader, Select, SortTh, Td, Th } from "@/components/ui/primitives";
 import { Delta } from "@/components/ui/delta";
 import { Pagination } from "@/components/ui/pagination";
 import { SegmentBadge } from "@/components/creators/segment-badge";
@@ -61,14 +61,7 @@ export default async function CreatorsPage({ searchParams }: PageProps<"/creator
 
   const sortHref = (key: SortKey) =>
     href("/creators", { ...base, sort: key === "gmv" && dir === "desc" && sort !== "gmv" ? undefined : key, dir: sort === key && dir === "desc" ? "asc" : "desc" });
-  const SortTh = ({ k, children, align }: { k: SortKey; children: React.ReactNode; align?: "right" }) => (
-    <Th align={align}>
-      <Link href={sortHref(k)} className={cn("inline-flex items-center gap-1 hover:text-ink", sort === k && "text-ink")}>
-        {children}
-        {sort === k && (dir === "desc" ? <ArrowDown className="size-3" /> : <ArrowUp className="size-3" />)}
-      </Link>
-    </Th>
-  );
+  const sortProps = (k: SortKey) => ({ href: sortHref(k), active: sort === k, dir } as const);
 
   return (
     <div className="space-y-5">
@@ -107,16 +100,16 @@ export default async function CreatorsPage({ searchParams }: PageProps<"/creator
             <table className="w-full min-w-[980px] border-collapse">
               <thead>
                 <tr>
-                  <SortTh k="name">Creator</SortTh>
+                  <SortTh {...sortProps("name")}>Creator</SortTh>
                   <Th>Segment</Th>
-                  <SortTh k="gmv" align="right">GMV</SortTh>
-                  <SortTh k="change" align="right">vs prev.</SortTh>
-                  <SortTh k="orders" align="right">Orders</SortTh>
-                  <SortTh k="vpw" align="right">Videos / wk</SortTh>
+                  <SortTh {...sortProps("gmv")} align="right">GMV</SortTh>
+                  <SortTh {...sortProps("change")} align="right">vs prev.</SortTh>
+                  <SortTh {...sortProps("orders")} align="right">Orders</SortTh>
+                  <SortTh {...sortProps("vpw")} align="right">Videos / wk</SortTh>
                   <Th align="right">Top product</Th>
-                  <SortTh k="cancel" align="right">Cancelled</SortTh>
-                  <SortTh k="followers" align="right">Followers</SortTh>
-                  <SortTh k="uplift" align="right">Uplift est.</SortTh>
+                  <SortTh {...sortProps("cancel")} align="right">Cancelled</SortTh>
+                  <SortTh {...sortProps("followers")} align="right">Followers</SortTh>
+                  <SortTh {...sortProps("uplift")} align="right">Uplift est.</SortTh>
                 </tr>
               </thead>
               <tbody>

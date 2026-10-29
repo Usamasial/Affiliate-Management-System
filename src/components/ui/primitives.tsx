@@ -1,4 +1,6 @@
 import * as React from "react";
+import Link from "next/link";
+import { ArrowDown, ArrowUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function Card({
@@ -8,7 +10,7 @@ export function Card({
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn("rounded-xl border border-line bg-surface shadow-card", className)}
+      className={cn("min-w-0 rounded-xl border border-line bg-surface shadow-card", className)}
       {...props}
     >
       {children}
@@ -199,5 +201,29 @@ export function Td({
       )}
       {...props}
     />
+  );
+}
+
+/** Table header cell that links to a sorted version of the list. */
+export function SortTh({
+  href,
+  active,
+  dir,
+  align,
+  children,
+}: {
+  href: string;
+  active: boolean;
+  dir: "asc" | "desc";
+  align?: "right";
+  children: React.ReactNode;
+}) {
+  return (
+    <Th align={align} aria-sort={active ? (dir === "asc" ? "ascending" : "descending") : undefined}>
+      <Link href={href} className={cn("inline-flex items-center gap-1 hover:text-ink", active && "text-ink")}>
+        {children}
+        {active && (dir === "desc" ? <ArrowDown className="size-3" /> : <ArrowUp className="size-3" />)}
+      </Link>
+    </Th>
   );
 }

@@ -4,6 +4,7 @@ import {
   Database,
   LayoutDashboard,
   Package,
+  ShoppingCart,
   Settings,
   Target,
   Users,
@@ -31,6 +32,7 @@ export const NAV: NavGroup[] = [
       { href: "/content", label: "Content", icon: Video, usesPeriod: true },
       { href: "/products", label: "Products", icon: Package, usesPeriod: true },
       { href: "/samples", label: "Samples", icon: Beaker, usesPeriod: true },
+      { href: "/orders", label: "Orders", icon: ShoppingCart, usesPeriod: true },
     ],
   },
   {

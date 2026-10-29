@@ -45,14 +45,14 @@ export default async function DataPage() {
 
       <Card>
         <CardHeader title="Coverage" description="What's loaded, and where to export each report." />
-        <ul className="grid gap-px border-t border-line bg-line sm:grid-cols-2 xl:grid-cols-3">
+        <ul className="grid overflow-hidden border-t border-line sm:grid-cols-2 xl:grid-cols-3">
           {KINDS.map((k) => {
             const m = KIND_META[k];
             const u = latest.get(k);
             const age = daysOld(u?.periodEnd ?? null);
             const stale = age != null && age > FRESH_DAYS;
             return (
-              <li key={k} className="bg-surface p-4">
+              <li key={k} className="border-r border-b border-line bg-surface p-4 sm:[&:nth-child(2n)]:border-r-0 xl:[&:nth-child(2n)]:border-r xl:[&:nth-child(3n)]:border-r-0">
                 <div className="flex items-center justify-between gap-2">
                   <p className="text-[14px] font-semibold text-ink">{m.label}</p>
                   {!u ? (

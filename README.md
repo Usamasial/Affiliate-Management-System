@@ -1,36 +1,55 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Affiliate HQ
 
-## Getting Started
+A web app for managing a TikTok Shop affiliate programme: see which creators perform and which don't,
+find sellers who deserve more investment, and turn that into ready-to-send instructions the team can track.
 
-First, run the development server:
+## What it does
+
+| Area | What you get |
+|---|---|
+| **Overview** | Affiliate GMV, orders, AOV, commission cost, cancellations – each vs. the previous period. Sales by source (creator video, creator LIVE, showcase, external traffic, **brand LIVE**, organic) across the whole shop, plus auto-written key findings. |
+| **Creators** | Every creator with segment, GMV trend, posting rhythm, cancellations, followers; profile page with sales over time, products, top videos, samples, notes and history. |
+| **Opportunities** | Creators grouped by what they need next (see below) with the reasoning, an estimated uplift and a copy-ready message. |
+| **Action centre** | Work queue ranked by priority: assign, mark sent/done/dismissed, add notes. Re-generated from fresh data after every import; work already done is never overwritten. |
+| **Content** | How old are the videos that sell (evergreen dependence), evergreen winners, best posting times, hashtags that convert, top videos. |
+| **Products / Samples / Orders** | Product performance and under-promoted products; sample funnel and ROI; shop-wide cancellations (COD vs. online), payments, states, delivery. |
+| **Data hub** | Drag-and-drop the TikTok exports. File type is detected automatically; period is read from the filename. |
+| **Settings** (admin) | Team and roles, recommendation thresholds, brand-owned accounts. |
+
+Roles: **admin** (everything), **affiliate manager** (upload data, work actions), **viewer** (read-only).
+
+### Segments
+
+`Star` · `Winner, posts too little` · `Rising` · `New seller` · `Steady` · `Views, few sales` · `Slipping` · `Gone quiet` ·
+`Sample, no content` · `Untapped reach`. Thresholds are percentile-based and editable in Settings.
+
+## Data model in one paragraph
+
+Order exports are **transactional** (upserted by order + SKU, so overlapping weekly uploads are safe and trends are exact).
+Report exports (creator list, transaction analysis, video analysis, sample analysis, product list) are **dated snapshots**; a snapshot
+for the same type and period replaces the previous one. Analytics pick the snapshot that overlaps the selected period the most.
+"Valid" sales exclude cancelled and returned lines using the shop-wide order status; cash-on-delivery that hasn't been collected yet
+(TikTok's "Unpaid by customer") still counts as a sale.
+
+## Run it
+
+Requirements: Node 20+, PostgreSQL 14+.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.example .env          # set DATABASE_URL
+npm install
+npm run db:push               # creates the tables
+npm run dev                   # http://localhost:3000 → create the first admin on /setup
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open **Data hub** and upload your exports. For a quick start with a folder of exports:
+`npm run import:sample -- ./path/to/exports`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Production: `npm run build && npm start` (set `DATABASE_URL`; put it behind HTTPS).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Notes and limits
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Insights come from TikTok's own exports; attribution windows mean creator totals differ slightly from order totals.
+- Uplift figures are **conservative estimates** (extra videos × the creator's historic GMV per selling video × a confidence factor). They are for prioritising, not forecasting.
+- The app doesn't send messages; it writes them. Copy them into TikTok or WhatsApp, then mark the action sent.
+- Phase 2 ideas: before/after impact tracking per action, TikTok Shop API sync, AI-personalised messages, alerts.

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink, Lightbulb } from "lucide-react";
 import { getCurrentUser, can } from "@/lib/auth";
 import { periodQuery, resolvePeriod } from "@/lib/period";
